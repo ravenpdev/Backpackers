@@ -11,7 +11,7 @@ import {
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
-import { CurrenUser, JwtAuthGuard, UserDto } from '@app/common';
+import { CurrentUser, JwtAuthGuard, UserDto } from '@app/common';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -21,7 +21,7 @@ export class ReservationsController {
   @UseGuards(JwtAuthGuard)
   async create(
     @Body() createReservationDto: CreateReservationDto,
-    @CurrenUser() user: UserDto,
+    @CurrentUser() user: UserDto,
   ) {
     return this.reservationsService.create(createReservationDto, user._id);
   }
