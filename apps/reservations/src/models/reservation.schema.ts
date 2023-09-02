@@ -12,8 +12,6 @@ export class ReservationDocument extends AbstractDocument {
   @Prop()
   userId: string;
   @Prop()
-  placeId: string; // another microservice for places
-  @Prop()
   invoiceId: string; // another microservice for billing
 }
 
