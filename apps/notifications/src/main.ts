@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { NotificationsModule } from './notifications.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices';
 import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
@@ -10,11 +10,14 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.useGlobalPipes(new ValidationPipe());
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.TCP,
+
+  app.connectMicroservice({
+    transport: Transport.RMQ,
     options: {
-      host: '0.0.0.0',
-      port: configService.get('PORT'),
+      urls: [configService.get('RABBITMQ_URI')],
+      queue: 'notifications',
+      // host: '0.0.0.0',
+      // port: configService.get('PORT'),
     },
   });
 

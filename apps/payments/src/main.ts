@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { PaymentsModule } from './payments.module';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
 import { ValidationPipe } from '@nestjs/common';
@@ -10,11 +10,16 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.useGlobalPipes(new ValidationPipe());
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.TCP,
+  app.connectMicroservice({
+    // transport: Transport.TCP,
+    // options: {
+    //   host: '0.0.0.0',
+    //   port: configService.get('PORT'),
+    // },
+    transport: Transport.RMQ,
     options: {
-      host: '0.0.0.0',
-      port: configService.get('PORT'),
+      urls: [configService.getOrThrow('RABBITMQ_URI')],
+      queue: 'payments',
     },
   });
 
